@@ -16,7 +16,7 @@ class button(QPushButton):
         self.resize(200,50)
         self.setText(t)
         self.move(btn_x,y)
-
+#time
 mytime = time.localtime()
 if mytime.tm_hour < 12:
     str_hello='早上好！'
@@ -24,6 +24,7 @@ elif mytime.tm_hour<18:
     str_hello='下午好！'
 else:
     str_hello='晚上好！'
+#UI
 class covid_info_ui(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -47,8 +48,6 @@ class covid_info_ui(QMainWindow):
         date_time.setText(dt)
         date_time.resize(500,30)
         date_time.move(100,30)
-        
-        
 
 app = QApplication(sys.argv)
 ex = covid_info_ui()
@@ -57,14 +56,6 @@ btn_y = 110
 btn_1 = button(ex,'城市数据',btn_y)
 btn_2 = button(ex,'城市中高风险区',btn_y+50)
 btn_3 = button(ex,'详细疫情数据',btn_y+100)
-
-
-
-dlg = QDialog()
-dlg.setWindowTitle('疫情信息助手')
-dlg.resize(500, 500)
-
-
 
 #combobox
 f = open("prov.txt", "r",encoding="utf-8")
@@ -78,8 +69,16 @@ f.close()
 btn_1.clicked.connect(lambda:print(combo.currentText()))
 
 
+dlg = QDialog()
+def understand():
+    ex.show()
+    dlg.done(1)
+dlg.setWindowTitle('警告！')
+dlg.resize(1000, 200)
+lab_warning = QLabel(dlg)
+lab_warning.setText('本软件仅提供数据汇总，数据来源均为国家卫健委。\n继续使用意味着您理解：本软件不对数据真实性负任何责任，不可以作为任何医疗建议！\n感谢您的使用！')
+btn_warn=button(dlg,'我理解以上声明',100)
+btn_warn.clicked.connect(lambda:understand())
 
-
-ex.show()
+dlg.show()
 sys.exit(app.exec())
-
