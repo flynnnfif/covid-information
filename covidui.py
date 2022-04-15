@@ -7,7 +7,10 @@ from PyQt5.QtCore import QDateTime
 from PyQt5.QtGui import QPixmap,QIcon
 from datetime import datetime
 import time
+from utils import covid_info
 
+#information
+covid_result=covid_info(0,0)
 #button
 btn_x = 200
 class button(QPushButton):
@@ -38,21 +41,33 @@ class covid_info_ui(QMainWindow):
         label.resize(100,100)
         label.setPixmap(pixmap)
         label.move(0,0)
-        self.resize(500,500)
+        self.resize(600,500)
+
         hello = QLabel(self)
         hello.setText(str_hello)
         hello.resize(200,30)
-        hello.move(100,0)
+        moji_x=130
+        moji_y=35
+        hello.move(moji_x,moji_y)
+
         date_time = QLabel(self)
         dt=str(datetime.now())
         date_time.setText(dt)
         date_time.resize(500,30)
-        date_time.move(100,30)
+        date_time.move(moji_x,moji_y+20)
+
+        moji_coun = QLabel(self)
+        country_number=covid_result.country()
+        moji_coun.setText(country_number)
+        moji_coun.resize(1000,200)
+        moji_coun.move(10,100)
+
+
 
 app = QApplication(sys.argv)
 ex = covid_info_ui()
-
-btn_y = 110
+#button
+btn_y = 320
 btn_1 = button(ex,'城市数据',btn_y)
 btn_2 = button(ex,'城市中高风险区',btn_y+50)
 btn_3 = button(ex,'详细疫情数据',btn_y+100)
@@ -67,18 +82,25 @@ for line in f.readlines():
     combo.addItem(line)
 f.close()
 btn_1.clicked.connect(lambda:print(combo.currentText()))
-
-
+'''
+#warning
 dlg = QDialog()
 def understand():
     ex.show()
     dlg.done(1)
 dlg.setWindowTitle('警告！')
 dlg.resize(1000, 200)
+warn_icon = QIcon()
+warn_icon.addPixmap(QPixmap('noun-warning-1559852.png'))
+dlg.setWindowIcon(warn_icon)
 lab_warning = QLabel(dlg)
 lab_warning.setText('本软件仅提供数据汇总，数据来源均为国家卫健委。\n继续使用意味着您理解：本软件不对数据真实性负任何责任，不可以作为任何医疗建议！\n感谢您的使用！')
+lab_warning.move(10,10)
 btn_warn=button(dlg,'我理解以上声明',100)
+btn_warn.move(370,120)
 btn_warn.clicked.connect(lambda:understand())
 
 dlg.show()
+'''
+ex.show()
 sys.exit(app.exec())
