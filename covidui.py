@@ -3,10 +3,12 @@
 
 import sys
 from PyQt5.QtWidgets import QApplication, QDialog, QPushButton,QComboBox,QLabel, QMainWindow, QWidget, QVBoxLayout
-from PyQt5.QtCore import QDateTime
 from PyQt5.QtGui import QPixmap,QIcon
 from datetime import datetime
 import time
+from more_itertools import tabulate
+
+from sqlalchemy import true
 from utils import covid_info
 
 #information
@@ -59,20 +61,32 @@ class covid_info_ui(QMainWindow):
         moji_coun = QLabel(self)
         country_number=covid_result.country()
         moji_coun.setText(country_number)
-        moji_coun.resize(1000,200)
+        moji_coun.resize(600,220)
         moji_coun.move(10,100)
 
+class CTlab(QLabel):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle('疫情信息助手')
+        self.resize(700,700)
+        self.setWordWrap(True)
+    def showlab(self,t):
+        self.setText(t)
+        self.show()
 
+class area_tab(tuple):
+    def pro_area(self):
+        re_area = ' '
+        for i in self:
+            re_area += i+"\n"
+        re_area = re_area[10:]
+        return(re_area)
 
 app = QApplication(sys.argv)
 ex = covid_info_ui()
-#button
-btn_y = 320
-btn_1 = button(ex,'城市数据',btn_y)
-btn_2 = button(ex,'城市中高风险区',btn_y+50)
-btn_3 = button(ex,'详细疫情数据',btn_y+100)
-
+lab_city=CTlab()
 #combobox
+btn_y = 340
 f = open("prov.txt", "r",encoding="utf-8")
 combo = QComboBox(ex)
 combo.resize(120,50)
@@ -81,9 +95,15 @@ for line in f.readlines():
     line=line.strip()
     combo.addItem(line)
 f.close()
-btn_1.clicked.connect(lambda:print(combo.currentText()))
+#button
+btn_1 = button(ex,'省市数据',btn_y)
+btn_2 = button(ex,'省市中高风险区',btn_y+50)
+btn_3 = button(ex,'详细疫情数据',btn_y+100)
+btn_1.clicked.connect(lambda:lab_city.showlab(covid_result.city(combo.currentText())))
+btn_2.clicked.connect(lambda:lab_city.showlab(area_tab.pro_area(covid_result.area(combo.currentText()))))
+
 '''
-#warning
+#warningUI
 dlg = QDialog()
 def understand():
     ex.show()
