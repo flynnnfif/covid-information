@@ -6,13 +6,12 @@ from PyQt5.QtWidgets import QApplication, QDialog, QPushButton,QComboBox,QLabel,
 from PyQt5.QtGui import QPixmap,QIcon
 from datetime import datetime
 import time
-from more_itertools import tabulate
-
-from sqlalchemy import true
-from utils import covid_info
+from utils import covid_info,covid_table
+import matplotlib.pyplot as plt
 
 #information
 covid_result=covid_info(0,0)
+pic_table = covid_table()
 #button
 btn_x = 200
 class button(QPushButton):
@@ -43,7 +42,7 @@ class covid_info_ui(QMainWindow):
         label.resize(100,100)
         label.setPixmap(pixmap)
         label.move(0,0)
-        self.resize(600,500)
+        self.resize(600,600)
 
         hello = QLabel(self)
         hello.setText(str_hello)
@@ -96,13 +95,20 @@ for line in f.readlines():
     combo.addItem(line)
 f.close()
 #button
-btn_1 = button(ex,'省市数据',btn_y)
+btn_1 = button(ex,'省市简报',btn_y)
 btn_2 = button(ex,'省市中高风险区',btn_y+50)
-btn_3 = button(ex,'详细疫情数据',btn_y+100)
+btn_3 = button(ex,'新增确诊趋势图',btn_y+100)
+btn_4 = button(ex,'新增无症状趋势图',btn_y+150)
 btn_1.clicked.connect(lambda:lab_city.showlab(covid_result.city(combo.currentText())))
 btn_2.clicked.connect(lambda:lab_city.showlab(area_tab.pro_area(covid_result.area(combo.currentText()))))
-
-'''
+def win_plt():
+    plt.plot(pic_table.date,pic_table.numc_list)
+    plt.show()
+btn_3.clicked.connect(lambda:win_plt())
+def no_plt():
+    plt.plot(pic_table.date,pic_table.numl_list)
+    plt.show()
+btn_4.clicked.connect(lambda:no_plt())
 #warningUI
 dlg = QDialog()
 def understand():
@@ -121,6 +127,4 @@ btn_warn.move(370,120)
 btn_warn.clicked.connect(lambda:understand())
 
 dlg.show()
-'''
-ex.show()
 sys.exit(app.exec())
