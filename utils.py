@@ -76,7 +76,8 @@ class covid_table():
             self.numc_list.append(int(re.search('新增确诊病例(.*?)例',page_num).group(1)))
             self.numl_list.append(int(re.search('新增无症状感染者(.*?)例',page_num).group(1)))
 
+
 if __name__=='__main__':
-    #covid_result=covid_info(0,0)
-    #covid_result.area('吉林')
+    covid_result=covid_info(0,0)
+    covid_result.area('吉林')
     c_table=covid_table()
